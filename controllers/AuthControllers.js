@@ -26,4 +26,6 @@ export const registerUser = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
+
+  // Here we are receiving the user details from the frontend in req.body. Then we are using bcrypt to generate a salt for the password and then using that salt to generate a hashed password for the user. Then we are creating a new user using the userModel and putting the hashed password instead of the plain password. Then we are saving that newUser in the database. If it is successfully saved, we are returning the newUser details as a json. If an error occurs, we are showing the error message.
 };
