@@ -2,7 +2,7 @@
 
 # Polaroid - An Online Platform dedicated to Creators
 
-Please note that this project is still a work in progress.
+⚠️⚠️ Please note that this project is still a work in progress. ⚠️⚠️
 
 Polaroid is an online platform where creator like photographers or artists or authors can upload their work for the world to see, and appreciate or buy.
 
