@@ -4,6 +4,7 @@ import bodyParser from "body-parser";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import AuthRoute from "./routes/AuthRoute.js";
+import UserRoute from "./routes/UserRoute.js";
 
 // Initializing the app server
 const app = express();
@@ -27,4 +28,5 @@ mongoose
   .catch((error) => console.log(error));
 
 //Routes
-app.use("/auth", AuthRoute); //->Authentication Routes
+app.use("/auth", AuthRoute); //-> Authentication Routes
+app.use("/user", UserRoute); //-> User Action Routes
