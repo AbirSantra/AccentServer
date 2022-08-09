@@ -2,12 +2,18 @@
 // All routes start with /user
 
 import express from "express";
-import { getUser, updateUser } from "../controllers/UserControllers.js";
+import {
+  deleteUser,
+  getUser,
+  updateUser,
+} from "../controllers/UserControllers.js";
 
 const router = express.Router();
 
-router.get("/:id", getUser); //getting user details
+router.get("/:id", getUser); // getting user's details
 
-router.put("/:id", updateUser); //updating a user's details
+router.put("/:id", updateUser); // updating a user's details
+
+router.delete("/:id", deleteUser); // deleting a user's details
 
 export default router;

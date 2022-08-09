@@ -67,3 +67,30 @@ export const updateUser = async (req, res) => {
   // If any error occurs, return the error message.
   // Incase, the current user id does not match the target id or the current user is not admin, return message "Access denied"
 };
+
+//! Deleting a user
+export const deleteUser = async (req, res) => {
+  const targetUserId = req.params.id;
+
+  const { currentUserId, isAdmin } = req.body;
+
+  if (currentUserId === targetUserId || isAdmin) {
+    try {
+      await userModel.findByIdAndDelete(targetUserId);
+      res.status(200).json("User successfully deleted!");
+    } catch (error) {
+      res.status(500).json(error);
+    }
+  } else {
+    res
+      .status(403)
+      .json("Access denied! You can only delete your own profile.");
+  }
+
+  // Get the target user id to be deleted from the params
+  // Get the current user id, admin status from the req.body
+  // A user can delete an account only if (1) the user is trying to delete his own account, that is, the current user id is the same as the target user id or (2) the current user is an admin
+  // Delete the user account using findByIdAndDelete() and send successful completion message
+  // If any error, send the error message
+  // In case, the current user id does not match the target user id or the current user is not an admin, return message "Access Denied"
+};
