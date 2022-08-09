@@ -4,7 +4,7 @@
 import userModel from "../models/userModel.js";
 import bcrypt from "bcrypt";
 
-// Registering a new user
+//! Registering a new user
 export const registerUser = async (req, res) => {
   const { username, email, password, firstname, lastname } = req.body;
 
@@ -35,7 +35,7 @@ export const registerUser = async (req, res) => {
   // If an error occurs, we are showing the error message.
 };
 
-// Loging in an Exisiting User
+//! Loging in an Exisiting User
 export const loginUser = async (req, res) => {
   const { username, password } = req.body;
 
