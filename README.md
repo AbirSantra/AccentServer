@@ -1,6 +1,6 @@
 ![Imgur](https://i.imgur.com/hUMKrNr.png)
 
-# Polaroid - An Online Platform dedicated to Creators
+# Polaroid - An Online Platform dedicated to Digital Creators and Artists
 
 ⚠️⚠️ Please note that this project is still a work in progress. ⚠️⚠️
 
