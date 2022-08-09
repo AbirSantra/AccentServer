@@ -57,4 +57,13 @@ export const updateUser = async (req, res) => {
       .status(403)
       .json("Access Denied! You can only update your own profile.");
   }
+
+  // Get the userId of the account we want to update from params
+  // Get the current user's id, admin status, and updated password from the req.body
+  // A user can only update an account if (1) it is his own account, that is, the target user id and current user id are the same or (2) if the current user is an admin
+  // Check if the request contains a password field
+  // If true, then that means that the user has requested a password changed. So we change the password field in the req.body to a hashed password
+  // Then, update the user details using findByIdAndUpdate() passing the target id, req.body(details to be updated) and set new:true
+  // If any error occurs, return the error message.
+  // Incase, the current user id does not match the target id or the current user is not admin, return message "Access denied"
 };
