@@ -1,5 +1,5 @@
 //! This file contains all the controllers for all the routes related to users
-// These are basically the functions that are carried out when the specific route is called
+//? These are basically the functions that are carried out when the specific route is called
 
 import userModel from "../models/userModel.js";
 import bycrpt from "bcrypt";
@@ -93,4 +93,45 @@ export const deleteUser = async (req, res) => {
   // Delete the user account using findByIdAndDelete() and send successful completion message
   // If any error, send the error message
   // In case, the current user id does not match the target user id or the current user is not an admin, return message "Access Denied"
+};
+
+//! Following a User
+export const followUser = async (req, res) => {
+  const targetUserId = req.params.id;
+
+  const { currentUserId } = req.body;
+
+  if (targetUserId === currentUserId) {
+    res
+      .status(403)
+      .json("Action forbidden! You cannot follow your own account.");
+  } else {
+    try {
+      const targetUser = await userModel.findById(targetUserId);
+      const currentUser = await userModel.findById(currentUserId);
+
+      if (!targetUser.followers.includes(currentUserId)) {
+        await targetUser.updateOne({ $push: { followers: currentUserId } });
+        await currentUser.updateOne({ $push: { following: targetUserId } });
+        res.status(200).json("User followed!");
+      } else {
+        res.status(403).json("User is already followed by you!");
+      }
+    } catch (error) {
+      res.status(500).json(error);
+    }
+  }
+
+  // Get the target user id from the params
+  // Get the current user id from the body
+  // Check if the current user id and the target user id are the same.
+  // If true, then it means the user is trying to follow themselves. Return action forbidden message
+  // Else, proceed
+  // Get the target user details from the database using findById()
+  // Get the current user details from the database using findById()
+  // If the targetUser.follower array does not include the current user id, then proceed
+  // Push the currentUserId into the followers array of the targetUser using updateOne() and $push
+  // Push the targetUserId into the followings array of the currentUser using updateOne() and $push
+  // Send success message
+  // Else, send error message
 };

@@ -4,6 +4,7 @@
 import express from "express";
 import {
   deleteUser,
+  followUser,
   getUser,
   updateUser,
 } from "../controllers/UserControllers.js";
@@ -15,5 +16,7 @@ router.get("/:id", getUser); // getting user's details
 router.put("/:id", updateUser); // updating a user's details
 
 router.delete("/:id", deleteUser); // deleting a user's details
+
+router.put("/:id/follow", followUser); // following a user
 
 export default router;
