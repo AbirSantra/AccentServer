@@ -135,3 +135,43 @@ export const followUser = async (req, res) => {
   // Send success message
   // Else, send error message
 };
+
+//! Unfollow User
+export const unfollowUser = async (req, res) => {
+  const targetUserId = req.params.id;
+
+  const { currentUserId } = req.body;
+
+  if (targetUserId === currentUserId) {
+    res.status(403).json("Action Forbidden! You cannot unfollow yourself");
+  } else {
+    try {
+      const targetUser = await userModel.findById(targetUserId);
+
+      const currentUser = await userModel.findById(currentUserId);
+
+      if (targetUser.followers.includes(currentUserId)) {
+        await targetUser.updateOne({ $pull: { followers: currentUserId } });
+        await currentUser.updateOne({ $pull: { following: targetUserId } });
+        res.status(200).json("User Unfollowed!");
+      } else {
+        res.status(403).json("User is not followed by you!");
+      }
+    } catch (error) {
+      res.status(500).json(error);
+    }
+  }
+
+  // Get the target user id from the params
+  // Get the current user id from the body
+  // Check if the current user id and the target user id are the same.
+  // If true, then it means the user is trying to follow themselves. Return action forbidden message
+  // Else, proceed
+  // Get the target user details from the database using findById()
+  // Get the current user details from the database using findById()
+  // If the targetUser.follower array does include the current user id, then proceed
+  // Pull the currentUserId into the followers array of the targetUser using updateOne() and $pull
+  // Pull the targetUserId into the followings array of the currentUser using updateOne() and $pull
+  // Send success message
+  // Else, send error message
+};

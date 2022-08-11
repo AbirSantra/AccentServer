@@ -6,6 +6,7 @@ import {
   deleteUser,
   followUser,
   getUser,
+  unfollowUser,
   updateUser,
 } from "../controllers/UserControllers.js";
 
@@ -18,5 +19,7 @@ router.put("/:id", updateUser); // updating a user's details
 router.delete("/:id", deleteUser); // deleting a user's details
 
 router.put("/:id/follow", followUser); // following a user
+
+router.put("/:id/unfollow", unfollowUser); // unfollow a user
 
 export default router;
