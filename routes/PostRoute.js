@@ -4,6 +4,7 @@ import express from "express";
 import {
   createPost,
   deletePost,
+  getPost,
   likePost,
   savePost,
   updatePost,
@@ -21,6 +22,8 @@ router.delete("/:id", deletePost); //-> Delete a post
 router.put("/:id/like", likePost); //-> Like/Unlike a post
 
 router.put("/:id/save", savePost); //-> Save/Unsave a post
+
+router.get("/:id", getPost); //-> Get a post
 
 //Exporting the router object
 export default router;

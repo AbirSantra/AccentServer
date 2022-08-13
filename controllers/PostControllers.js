@@ -155,3 +155,22 @@ export const savePost = async (req, res) => {
   8. If any error, then return the error message
   */
 };
+
+//! Get a post
+export const getPost = async (req, res) => {
+  const targetPostId = req.params.id;
+
+  try {
+    const targetPost = await postModel.findById(targetPostId);
+    res.status(200).json(targetPost);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+
+  /*
+  1. Get the target post id from the params
+  2. Find the post in the database using the target post id
+  3. Return the post
+  4. If any error, send error message
+  */
+};
