@@ -143,4 +143,15 @@ export const savePost = async (req, res) => {
   } catch (error) {
     res.status(500).json(error);
   }
+
+  /*
+  1. Get the target post id from the params
+  2. Get the current user id from the body
+  3. Find the current user in the database using the current user id
+  4. If the savedPosts array of the user does not contain the target post id, then it means that the user wants to save the post.
+  5. Push the target post id into the savedPosts array of the current user using updateOne() and send success message
+  6. Else if the savedPosts array already contains the target post id, then it means that the user wants to unsave the post
+  7. Pull the target post id from the savedPosts array of the current user using updateOne() and send success message
+  8. If any error, then return the error message
+  */
 };
