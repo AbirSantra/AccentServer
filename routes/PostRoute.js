@@ -4,6 +4,7 @@ import express from "express";
 import {
   createPost,
   deletePost,
+  likePost,
   updatePost,
 } from "../controllers/PostControllers.js";
 
@@ -15,6 +16,8 @@ router.post("/", createPost); //-> Creating a post
 router.put("/:id", updatePost); //-> Update a post
 
 router.delete("/:id", deletePost); //-> Delete a post
+
+router.put("/:id/like", likePost); //-> Like/Unlike a post
 
 //Exporting the router object
 export default router;

@@ -90,3 +90,35 @@ export const deletePost = async (req, res) => {
   7. If any other error, send the error message
   */
 };
+
+//! Like/Unlike a Post
+export const likePost = async (req, res) => {
+  const targetPostId = req.params.id;
+
+  const { userId: currentUserId } = req.body;
+
+  try {
+    const post = await postModel.findById(targetPostId);
+
+    if (!post.likes.includes(currentUserId)) {
+      await post.updateOne({ $push: { likes: currentUserId } });
+      res.status(200).json("Post liked successfully!");
+    } else {
+      await post.updateOne({ $pull: { likes: currentUserId } });
+      res.status(200).json("Post unliked successfully!");
+    }
+  } catch (error) {
+    res.status(500).json(error);
+  }
+
+  /*
+  1. Get the target post id from the params
+  2. Get the current user id from the body
+  3. Find the target post in the database using the target post id
+  4. If the likes array of the post does not contain the current user id, then it means that the user wants to like the post.
+  5. Push the current user id into the likes array of the target post using updateOne() and send success message
+  6. Else if the likes array already contains the current user id, then it means that the user wants to dislike the post
+  7. Pull the current user id from the likes array of the target post using updateOne() and send success message
+  8. If any error, then return the error message
+  */
+};
