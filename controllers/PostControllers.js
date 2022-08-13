@@ -58,3 +58,35 @@ export const updatePost = async (req, res) => {
   9. If any error, send error message.
   */
 };
+
+//! Delete post
+export const deletePost = async (req, res) => {
+  const targetPostId = req.params.id;
+
+  const { userId } = req.body;
+
+  try {
+    const post = await postModel.findById(targetPostId);
+
+    if (post.userId === userId) {
+      await post.deleteOne();
+      res.status(200).json("Post successfully deleted!");
+    } else {
+      res
+        .status(403)
+        .json("Action forbidden! You can only delete your own post.");
+    }
+  } catch (error) {
+    res.status(500).json(error);
+  }
+
+  /* 
+  1. Get the target post id from the params
+  2. Get the current user id from the body
+  3. Find the post in the database using the target post id
+  4. If the post.userId matches the current user id, then it means the user is trying to delete their own post which is acceptable
+  5. Delete the post using deleteOne() and return success message
+  6. Else the user is trying to delete someone else's post which is not acceptable. So send error message
+  7. If any other error, send the error message
+  */
+};
