@@ -2,6 +2,7 @@
 //? All routes begin with '/post'
 
 import postModel from "../models/postModel.js";
+import userModel from "../models/userModel.js";
 import mongoose from "mongoose";
 
 //! Creating a new post
@@ -121,4 +122,25 @@ export const likePost = async (req, res) => {
   7. Pull the current user id from the likes array of the target post using updateOne() and send success message
   8. If any error, then return the error message
   */
+};
+
+//! Save/Unsave a post
+export const savePost = async (req, res) => {
+  const targetPostId = req.params.id;
+
+  const { userId: currentUserId } = req.body;
+
+  try {
+    const currentUser = await userModel.findById(currentUserId);
+
+    if (!currentUser.savedPosts.includes(targetPostId)) {
+      await currentUser.updateOne({ $push: { savedPosts: targetPostId } });
+      res.status(200).json("Post successfully saved!");
+    } else {
+      await currentUser.updateOne({ $pull: { savedPosts: targetPostId } });
+      res.status(200).json("Post successfully unsaved!");
+    }
+  } catch (error) {
+    res.status(500).json(error);
+  }
 };

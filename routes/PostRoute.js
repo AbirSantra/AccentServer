@@ -5,6 +5,7 @@ import {
   createPost,
   deletePost,
   likePost,
+  savePost,
   updatePost,
 } from "../controllers/PostControllers.js";
 
@@ -18,6 +19,8 @@ router.put("/:id", updatePost); //-> Update a post
 router.delete("/:id", deletePost); //-> Delete a post
 
 router.put("/:id/like", likePost); //-> Like/Unlike a post
+
+router.put("/:id/save", savePost); //-> Save/Unsave a post
 
 //Exporting the router object
 export default router;
