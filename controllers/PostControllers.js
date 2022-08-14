@@ -194,6 +194,26 @@ export const getNewestPosts = async (req, res) => {
   */
 };
 
+//! Get most Popular Posts
+export const getPopularPosts = async (req, res) => {
+  try {
+    const popularPosts = await postModel.aggregate([
+      { $addFields: { likesCount: { $size: "$likes" } } },
+      { $sort: { likesCount: -1 } },
+    ]);
+    res.status(200).json(popularPosts);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+
+  /*
+  1. Get the most popular posts using the aggregate function
+  2. Add the field likesCount to the post using the $addFields stage
+  3. Sort the posts using the 'likesCount' field and return
+  4. If any error, return the error message.
+  */
+};
+
 //! Get Following Posts
 export const getFollowingPosts = async (req, res) => {
   const currentUserId = req.params.id;
