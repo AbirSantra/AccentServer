@@ -175,6 +175,25 @@ export const getPost = async (req, res) => {
   */
 };
 
+//! Get Newest Posts
+export const getNewestPosts = async (req, res) => {
+  try {
+    const newestPosts = await postModel.aggregate([
+      { $sort: { createdAt: -1 } },
+    ]);
+    res.status(200).json(newestPosts);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+
+  /*
+  1. Get all the posts from the post model using the aggregate method.
+  2. Sort the posts in descending order using $sort stage by the 'createdAt' field
+  3. Return the posts and success message
+  4. If any error then return error message
+  */
+};
+
 //! Get Following Posts
 export const getFollowingPosts = async (req, res) => {
   const currentUserId = req.params.id;

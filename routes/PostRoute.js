@@ -5,6 +5,7 @@ import {
   createPost,
   deletePost,
   getFollowingPosts,
+  getNewestPosts,
   getPost,
   likePost,
   savePost,
@@ -27,6 +28,8 @@ router.put("/:id/save", savePost); //-> Save/Unsave a post
 router.get("/:id", getPost); //-> Get a post
 
 router.get("/:id/followingPosts", getFollowingPosts); //-> Get feed posts from followings
+
+router.get("/", getNewestPosts); //-> Get the newest posts
 
 //Exporting the router object
 export default router;
