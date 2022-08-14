@@ -1,14 +1,14 @@
-![Imgur](https://i.imgur.com/hUMKrNr.png)
+![accent logo](https://i.imgur.com/fhU8Wub.png)
 
-# Polaroid - An Online Platform dedicated to Digital Creators and Artists
+# Accent - A Platform for Artists and Photographers
 
 ⚠️⚠️ Please note that this project is still a work in progress. ⚠️⚠️
 
-Polaroid is an online platform where creator like photographers or artists or authors can upload their work for the world to see, and appreciate or buy.
+Accent is an online platform where creators like photographers and artists can showcase their work for the world to see, appreciate and buy.
 
 ## Features (Planned)
 
-- Create Polaroids (posts) - With or without image
+- Create Accents (posts)
 - Users won't be able to right-click and save original artwork or photograph from the post.
 - Posts will contain creator watermark to avoid plagiarism and content stealing.
 - Search and add other creators as friends
