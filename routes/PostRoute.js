@@ -6,6 +6,7 @@ import {
   deletePost,
   getFollowingPosts,
   getNewestPosts,
+  getPopularPosts,
   getPost,
   likePost,
   savePost,
@@ -16,6 +17,10 @@ import {
 const router = express.Router();
 
 router.post("/", createPost); //-> Creating a post
+
+router.get("/newest", getNewestPosts); //-> Get the newest posts
+
+router.get("/popular", getPopularPosts); //-> Get the most popular posts
 
 router.put("/:id", updatePost); //-> Update a post
 
@@ -28,8 +33,6 @@ router.put("/:id/save", savePost); //-> Save/Unsave a post
 router.get("/:id", getPost); //-> Get a post
 
 router.get("/:id/followingPosts", getFollowingPosts); //-> Get feed posts from followings
-
-router.get("/", getNewestPosts); //-> Get the newest posts
 
 //Exporting the router object
 export default router;
