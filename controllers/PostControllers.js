@@ -174,3 +174,57 @@ export const getPost = async (req, res) => {
   4. If any error, send error message
   */
 };
+
+//! Get Following Posts
+export const getFollowingPosts = async (req, res) => {
+  const currentUserId = req.params.id;
+
+  try {
+    const currentUserPosts = await postModel.find({ userId: currentUserId });
+
+    const followingUserPosts = await userModel.aggregate([
+      {
+        $match: {
+          _id: new mongoose.Types.ObjectId(currentUserId),
+        },
+      },
+      {
+        $lookup: {
+          from: "posts",
+          localField: "following",
+          foreignField: "userId",
+          as: "followingUserPosts",
+        },
+      },
+      {
+        $project: {
+          followingUserPosts: 1,
+          _id: 0,
+        },
+      },
+    ]);
+
+    res.status(200).json(
+      currentUserPosts
+        .concat(...followingUserPosts[0].followingUserPosts)
+        .sort((a, b) => {
+          return b.createdAt - a.createdAt;
+        })
+    );
+  } catch (error) {
+    res.status(500).json(error);
+  }
+
+  /*
+  1. This request will get all the posts by the followings of the current user as well as his own posts
+  2. Get the current user id from the params.
+  3. Get all the posts by the current user from the post model using find({userId: currentUserId})
+  4. Get all posts which belong to the users in the followings array of the current user using the userModel
+  5. To get all the posts from different sources we need to setup an aggregation pipeline
+  6. The $match stage allows us to choose just those documents from a collection that we want to work with. It does this by filtering out those that do not follow our requirements. Here, our requirements are that we only need the posts for the current user. So we match the _id with the currentUserId by converting it into mongoose object id format.
+  7. The $lookup stage allows us to merge fields from two different collections (here, the userModel and postModel). We specify the collection from where we need the documents (here, the 'posts' collection), then we specify the localfield (here, the "following" since we need to get the posts belonging to the following users only), then we specify the foreignfield with which we need to merge (here, the 'userId' since we need to match the users from the 'followings' array of the user with the 'userId' of the post).
+  8. The $project stage allows us to define how we want our results back. Here we specify that we need the results as 'followingUserPosts' and we do not need the _id field
+  9. Now we concat the current users posts with the following users posts and then sort them by the date of creation in descending order and return the result
+  10. If any error, return the error message.
+  */
+};
