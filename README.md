@@ -1,4 +1,9 @@
+<br>
+<br>
+
 ![accent logo](https://i.imgur.com/fhU8Wub.png)
+
+<br>
 
 # Accent - A Platform for Artists and Photographers
 
