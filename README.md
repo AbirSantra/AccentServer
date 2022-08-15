@@ -1,7 +1,7 @@
 <br>
 <br>
 
-![accent logo](https://i.imgur.com/fhU8Wub.png)
+![accent logo](https://i.imgur.com/QWzMzgI.png)
 
 <br>
 
