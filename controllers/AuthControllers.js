@@ -3,6 +3,7 @@
 
 import userModel from "../models/userModel.js";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 //! Registering a new user
 export const registerUser = async (req, res) => {
@@ -21,8 +22,25 @@ export const registerUser = async (req, res) => {
   });
 
   try {
-    await newUser.save();
-    res.status(200).json(newUser);
+    const existingUser = await userModel.findOne({ username });
+
+    if (existingUser) {
+      return res.status(400).json({ message: "Username is already taken!" });
+    }
+
+    const user = await newUser.save();
+
+    const token = jwt.sign(
+      {
+        // creating the token using username and id
+        username: user.username,
+        id: user._id,
+      },
+      process.env.JWT_SECRET, // token secret
+      { expiresIn: "1h" } // time to live of token
+    );
+
+    res.status(200).json({ user, token });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -30,8 +48,10 @@ export const registerUser = async (req, res) => {
   // Here we are receiving the user details from the frontend in req.body.
   // Then we are using bcrypt to generate a salt for the password and then using that salt to generate a hashed password for the user.
   // Then we are creating a new user using the userModel and putting the hashed password instead of the plain password.
+  // Check if the username is already taken and return error message if yes.
   // Then we are saving that newUser in the database.
-  // If it is successfully saved, we are returning the newUser details as a json.
+  // Create a jwt token for the new user.
+  // If it is successfully saved, we are returning the new user and the token
   // If an error occurs, we are showing the error message.
 };
 
@@ -45,15 +65,26 @@ export const loginUser = async (req, res) => {
     if (existingUser) {
       const validity = await bcrypt.compare(password, existingUser.password);
 
-      if (validity) {
-        res.status(200).json(existingUser);
+      if (!validity) {
+        res.status(400).json({
+          message: "Wrong Password! Please check your password and try again.",
+        });
       } else {
-        res
-          .status(400)
-          .json("Wrong Password! Please check your password and try again.");
+        const token = jwt.sign(
+          {
+            username: existingUser.username,
+            id: existingUser._id,
+          },
+          process.env.JWT_SECRET, // token secret
+          { expiresIn: "1h" } // time to live of token
+        );
+
+        res.status(200).json({ existingUser, token });
       }
     } else {
-      res.status(404).json("User does not exist! Please register.");
+      res
+        .status(404)
+        .json({ message: "User does not exist! Please register." });
     }
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -63,7 +94,7 @@ export const loginUser = async (req, res) => {
   // Try to search for the username in the database.
   // If the user exists in the database, check for the password.
   // 'Validity' returns a boolean of whether the entered password matches with the hashed password
-  // If validity is true, it means the passwords match; return the logged in user.
+  // If validity is true, it means the passwords match; create a token and return
   // Else if the validity is false, it means the passwords do not match; Return "Wrong Password" error message
   // Else if the user doesn't exist in the database, then return "Wrong Username" error message.
   // If any other error, return server error message.
