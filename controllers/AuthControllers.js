@@ -82,9 +82,7 @@ export const loginUser = async (req, res) => {
         res.status(200).json({ existingUser, token });
       }
     } else {
-      res
-        .status(404)
-        .json({ message: "User does not exist! Please register." });
+      res.status(404).json({ message: "User does not exist!" });
     }
   } catch (error) {
     res.status(500).json({ message: error.message });
