@@ -15,6 +15,7 @@ Requirements of a Post
 const postSchema = mongoose.Schema(
   {
     userId: { type: String, required: true },
+    title: String,
     desc: String,
     likes: [],
     comments: [],
