@@ -60,10 +60,10 @@ export const loginUser = async (req, res) => {
   const { username, password } = req.body;
 
   try {
-    const existingUser = await userModel.findOne({ username: username });
+    const user = await userModel.findOne({ username: username });
 
-    if (existingUser) {
-      const validity = await bcrypt.compare(password, existingUser.password);
+    if (user) {
+      const validity = await bcrypt.compare(password, user.password);
 
       if (!validity) {
         res.status(400).json({
@@ -72,14 +72,14 @@ export const loginUser = async (req, res) => {
       } else {
         const token = jwt.sign(
           {
-            username: existingUser.username,
-            id: existingUser._id,
+            username: user.username,
+            id: user._id,
           },
           process.env.JWT_SECRET, // token secret
           { expiresIn: "1h" } // time to live of token
         );
 
-        res.status(200).json({ existingUser, token });
+        res.status(200).json({ user, token });
       }
     } else {
       res.status(404).json({ message: "User does not exist!" });
