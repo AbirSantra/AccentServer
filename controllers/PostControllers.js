@@ -124,7 +124,7 @@ export const likePost = async (req, res) => {
   */
 };
 
-//! Save/Unsave a post
+//! Save a post
 export const savePost = async (req, res) => {
   const targetPostId = req.params.id;
 
@@ -134,19 +134,12 @@ export const savePost = async (req, res) => {
     const currentUser = await userModel.findById(currentUserId);
 
     if (!currentUser.savedPosts.includes(targetPostId)) {
-      const updatedUser = await userModel.findByIdAndUpdate(
-        currentUserId,
-        { $push: { savedPosts: targetPostId } },
-        { new: true }
-      );
-      res.status(200).json(updatedUser);
+      await currentUser.updateOne({ $push: { savedPosts: targetPostId } });
+      res.status(200).json("Post Saved!");
     } else {
-      const updatedUser = await userModel.findByIdAndUpdate(
-        currentUserId,
-        { $pull: { savedPosts: targetPostId } },
-        { new: true }
-      );
-      res.status(200).json(updatedUser);
+      res.status(403).json("Post already saved by user!");
+      // await currentUser.updateOne({ $pull: { savedPosts: targetPostId } });
+      // res.status(200).json("Post Unliked!");
     }
   } catch (error) {
     res.status(500).json(error);
@@ -158,9 +151,36 @@ export const savePost = async (req, res) => {
   3. Find the current user in the database using the current user id
   4. If the savedPosts array of the user does not contain the target post id, then it means that the user wants to save the post.
   5. Push the target post id into the savedPosts array of the current user using updateOne() and send success message
-  6. Else if the savedPosts array already contains the target post id, then it means that the user wants to unsave the post
-  7. Pull the target post id from the savedPosts array of the current user using updateOne() and send success message
-  8. If any error, then return the error message
+  6. Else if the savedPosts array already contains the target post id, then return action forbidden since a user can only save a post once.
+  7. If any error, then return the error message
+  */
+};
+
+//! Unsave a post
+export const unsavePost = async (req, res) => {
+  const targetPostId = req.params.id;
+
+  const { userId: currentUserId } = req.body;
+
+  try {
+    const currentUser = await userModel.findById(currentUserId);
+    if (currentUser.savedPosts.includes(targetPostId)) {
+      await currentUser.updateOne({ $pull: { savedPosts: targetPostId } });
+      res.status(200).json("Post Unsaved!");
+    } else {
+      res.status(403).json("Post is not saved by user");
+    }
+  } catch (error) {
+    res.status(500).json(error);
+  }
+  /*
+  1. Get the target post id from the params
+  2. Get the current user id from the body
+  3. Find the current user in the database using the current user id
+  4. If the savedPosts array of the user contains the target post id, then it means that the user wants to unsave the post.
+  5. Pull the target post id from the savedPosts array of the current user using updateOne() and send success message
+  6. Else if the savedPosts array already does not contain the target post id, then it means that the user wants to unsave the post which was not saved in the first place. Return action forbidden.
+  7. If any error, then return the error message
   */
 };
 
