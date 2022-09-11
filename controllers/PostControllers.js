@@ -134,11 +134,19 @@ export const savePost = async (req, res) => {
     const currentUser = await userModel.findById(currentUserId);
 
     if (!currentUser.savedPosts.includes(targetPostId)) {
-      await currentUser.updateOne({ $push: { savedPosts: targetPostId } });
-      res.status(200).json("Post successfully saved!");
+      const updatedUser = await userModel.findByIdAndUpdate(
+        currentUserId,
+        { $push: { savedPosts: targetPostId } },
+        { new: true }
+      );
+      res.status(200).json(updatedUser);
     } else {
-      await currentUser.updateOne({ $pull: { savedPosts: targetPostId } });
-      res.status(200).json("Post successfully unsaved!");
+      const updatedUser = await userModel.findByIdAndUpdate(
+        currentUserId,
+        { $pull: { savedPosts: targetPostId } },
+        { new: true }
+      );
+      res.status(200).json(updatedUser);
     }
   } catch (error) {
     res.status(500).json(error);
