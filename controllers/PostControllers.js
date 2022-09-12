@@ -257,6 +257,34 @@ export const getFollowingPosts = async (req, res) => {
   */
 };
 
+//! Get the saved Posts of a user
+export const getSavedPosts = async (req, res) => {
+  const currentUserId = req.params.id;
+
+  try {
+    const currentUser = await userModel.findById(currentUserId);
+
+    const savedPosts = await Promise.all(
+      currentUser.savedPosts.map((postId) => {
+        return postModel.findById(postId);
+      })
+    );
+
+    res.status(200).json(savedPosts);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+
+  /* 
+  1. Get the current users id from the params
+  2. Get the current users details using the id.
+  3. Create a savedPosts array by mapping through the savedPosts array of the current user.
+  4. Map through the array and for each post id present in the array, get the respective post from the post model.
+  5. On success, return the savedPosts array
+  6. On Failure, return the error message.
+  */
+};
+
 //! Get Newest Posts
 export const getNewestPosts = async (req, res) => {
   try {

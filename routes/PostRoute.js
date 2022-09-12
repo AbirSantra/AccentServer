@@ -8,6 +8,7 @@ import {
   getNewestPosts,
   getPopularPosts,
   getPost,
+  getSavedPosts,
   likePost,
   savePost,
   unsavePost,
@@ -34,6 +35,8 @@ router.put("/:id/like", likePost); //-> Like/Unlike a post
 router.put("/:id/save", savePost); //-> Save/Unsave a post
 
 router.put("/:id/unsave", unsavePost); //-> Save/Unsave a post
+
+router.get("/:id/savedPosts", getSavedPosts); //-> Get all the saved posts of a user
 
 router.get("/:id/followingPosts", getFollowingPosts); //-> Get feed posts from followings
 
