@@ -63,13 +63,12 @@ export const updatePost = async (req, res) => {
 //! Delete post
 export const deletePost = async (req, res) => {
   const targetPostId = req.params.id;
-
-  const { userId } = req.body;
+  const currentUserId = req.params.userId;
 
   try {
     const post = await postModel.findById(targetPostId);
 
-    if (post.userId === userId) {
+    if (post.userId === currentUserId) {
       await post.deleteOne();
       res.status(200).json("Post successfully deleted!");
     } else {
@@ -270,7 +269,11 @@ export const getSavedPosts = async (req, res) => {
       })
     );
 
-    res.status(200).json(savedPosts);
+    const result = savedPosts.filter((post) => {
+      return post !== null;
+    });
+
+    res.status(200).json(result);
   } catch (error) {
     res.status(500).json(error);
   }

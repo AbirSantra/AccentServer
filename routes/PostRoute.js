@@ -28,7 +28,7 @@ router.get("/:id", getPost); //-> Get a post
 
 router.put("/:id", updatePost); //-> Update a post
 
-router.delete("/:id", deletePost); //-> Delete a post
+router.delete("/:id/:userId", deletePost); //-> Delete a post
 
 router.put("/:id/like", likePost); //-> Like/Unlike a post
 
