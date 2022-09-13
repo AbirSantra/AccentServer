@@ -65,6 +65,8 @@ export const deletePost = async (req, res) => {
   const targetPostId = req.params.id;
   const currentUserId = req.params.userId;
 
+  // We are taking both the arguments from the params since a http delete request does not allow a request to have a body.
+
   try {
     const post = await postModel.findById(targetPostId);
 
@@ -269,6 +271,7 @@ export const getSavedPosts = async (req, res) => {
       })
     );
 
+    // if the savedPosts array of a user contains ids of posts which were deleted by its creator, then the above savedPosts array will contain null elements. So we filter out the null elements and return the result
     const result = savedPosts.filter((post) => {
       return post !== null;
     });
