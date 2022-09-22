@@ -6,6 +6,8 @@ import {
   deleteUser,
   followUser,
   getUser,
+  getUserFollowers,
+  getUserFollowings,
   unfollowUser,
   updateUser,
 } from "../controllers/UserControllers.js";
@@ -13,6 +15,10 @@ import {
 const router = express.Router();
 
 router.get("/:id", getUser); // getting user's details
+
+router.get("/:id/followers", getUserFollowers); // get the followers details
+
+router.get("/:id/following", getUserFollowings); // get the followings details
 
 router.put("/:id", updateUser); // updating a user's details
 

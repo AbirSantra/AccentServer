@@ -1,4 +1,5 @@
 //! This file contains all the routes related to Posts
+//? All routes start with /post
 
 import express from "express";
 import {
@@ -9,6 +10,7 @@ import {
   getPopularPosts,
   getPost,
   getSavedPosts,
+  getUserPosts,
   likePost,
   savePost,
   unsavePost,
@@ -25,6 +27,8 @@ router.get("/newest", getNewestPosts); //-> Get the newest posts
 router.get("/popular", getPopularPosts); //-> Get the most popular posts
 
 router.get("/:id", getPost); //-> Get a post
+
+router.get("/:userId/posts", getUserPosts); //-> Get all posts of a user
 
 router.put("/:id", updatePost); //-> Update a post
 

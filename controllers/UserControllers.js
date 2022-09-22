@@ -175,3 +175,39 @@ export const unfollowUser = async (req, res) => {
   // Send success message
   // Else, send error message
 };
+
+//! Get the followers of an user
+export const getUserFollowers = async (req, res) => {
+  const currentUserId = req.params.id;
+
+  try {
+    const currentUser = await userModel.findById(currentUserId);
+    const followers = await Promise.all(
+      currentUser.followers.map((followerId) => {
+        return userModel.findById(followerId);
+      })
+    );
+
+    res.status(200).json(followers);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};
+
+//! Get the followings of a user
+export const getUserFollowings = async (req, res) => {
+  const currentUserId = req.params.id;
+
+  try {
+    const currentUser = await userModel.findById(currentUserId);
+    const followings = await Promise.all(
+      currentUser.following.map((followingId) => {
+        return userModel.findById(followingId);
+      })
+    );
+
+    res.status(200).json(followings);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};

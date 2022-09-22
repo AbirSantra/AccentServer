@@ -204,6 +204,22 @@ export const getPost = async (req, res) => {
   */
 };
 
+//! Get all posts of a user
+export const getUserPosts = async (req, res) => {
+  const targetUserId = req.params.userId;
+
+  try {
+    const targetUserPosts = await postModel.find({ userId: targetUserId });
+    res.status(200).json(
+      targetUserPosts.sort((a, b) => {
+        return b.createdAt - a.createdAt;
+      })
+    );
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};
+
 //! Get Following Posts
 export const getFollowingPosts = async (req, res) => {
   const currentUserId = req.params.id;
