@@ -3,6 +3,7 @@
 
 import userModel from "../models/userModel.js";
 import bycrpt from "bcrypt";
+import mongoose from "mongoose";
 
 //! Getting user details
 export const getUser = async (req, res) => {
@@ -36,7 +37,15 @@ export const getUser = async (req, res) => {
 export const updateUser = async (req, res) => {
   const userId = req.params.id;
 
-  const { currentUserId, isAdmin, password } = req.body;
+  const { currentUserId, isAdmin, password, ...userDetails } = req.body;
+
+  const existingUser = await userModel.findOne({ username: req.body.username });
+
+  if (existingUser) {
+    if (existingUser?._id?.toString() !== currentUserId) {
+      return res.status(400).json({ message: "Username is already taken!" });
+    }
+  }
 
   if (userId === currentUserId || isAdmin) {
     try {
@@ -45,9 +54,13 @@ export const updateUser = async (req, res) => {
         req.body.password = await bycrpt.hash(password, salt);
       }
 
-      const updatedUser = await userModel.findByIdAndUpdate(userId, req.body, {
-        new: true,
-      });
+      const updatedUser = await userModel.findByIdAndUpdate(
+        userId,
+        userDetails,
+        {
+          new: true,
+        }
+      );
       res.status(200).json(updatedUser);
     } catch (error) {
       res.status(500).json(error);
