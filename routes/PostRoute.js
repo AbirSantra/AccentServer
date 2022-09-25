@@ -3,6 +3,7 @@
 
 import express from "express";
 import {
+  commentPost,
   createPost,
   deletePost,
   getFollowingPosts,
@@ -35,6 +36,8 @@ router.put("/:id", updatePost); //-> Update a post
 router.delete("/:id/:userId", deletePost); //-> Delete a post
 
 router.put("/:id/like", likePost); //-> Like/Unlike a post
+
+router.put("/:id/comment", commentPost); //-> Comment on a post
 
 router.put("/:id/save", savePost); //-> Save/Unsave a post
 

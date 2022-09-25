@@ -125,6 +125,25 @@ export const likePost = async (req, res) => {
   */
 };
 
+//! Comment on a post
+export const commentPost = async (req, res) => {
+  const targetPostId = req.params.id;
+
+  try {
+    const targetPost = await postModel.findById(targetPostId);
+
+    const newComment = {
+      currentUserId: req.body.currentUserId,
+      text: req.body.text,
+    };
+
+    await targetPost.updateOne({ $push: { comments: newComment } });
+    res.status(200).json("Commented Successfully!");
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};
+
 //! Save a post
 export const savePost = async (req, res) => {
   const targetPostId = req.params.id;
