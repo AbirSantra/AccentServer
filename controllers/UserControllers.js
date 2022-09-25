@@ -131,7 +131,7 @@ export const followUser = async (req, res) => {
         res.status(403).json("User is already followed by you!");
       }
     } catch (error) {
-      res.status(500).json(error);
+      res.status(500).json(error.message);
     }
   }
 
