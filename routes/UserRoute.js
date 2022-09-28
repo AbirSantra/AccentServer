@@ -3,18 +3,21 @@
 
 import express from "express";
 import {
-  deleteUser,
-  followUser,
-  getUser,
-  getUserFollowers,
-  getUserFollowings,
-  unfollowUser,
-  updateUser,
+	deleteUser,
+	followUser,
+	getUser,
+	getUserFollowers,
+	getUserFollowings,
+	getUserSearch,
+	unfollowUser,
+	updateUser,
 } from "../controllers/UserControllers.js";
 
 const router = express.Router();
 
 router.get("/:id", getUser); // getting user's details
+
+router.get("/search/:query", getUserSearch); // getting users through search
 
 router.get("/:id/followers", getUserFollowers); // get the followers details
 
