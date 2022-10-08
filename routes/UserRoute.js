@@ -12,6 +12,7 @@ import {
 	unfollowUser,
 	updateUser,
 } from "../controllers/UserControllers.js";
+import auth from "../middleware/auth.js";
 
 const router = express.Router();
 
@@ -23,12 +24,12 @@ router.get("/:id/followers", getUserFollowers); // get the followers details
 
 router.get("/:id/following", getUserFollowings); // get the followings details
 
-router.put("/:id", updateUser); // updating a user's details
+router.put("/:id", auth, updateUser); // updating a user's details
 
-router.delete("/:id", deleteUser); // deleting a user's details
+router.delete("/:id", auth, deleteUser); // deleting a user's details
 
-router.put("/:id/follow", followUser); // following a user
+router.put("/:id/follow", auth, followUser); // following a user
 
-router.put("/:id/unfollow", unfollowUser); // unfollow a user
+router.put("/:id/unfollow", auth, unfollowUser); // unfollow a user
 
 export default router;
