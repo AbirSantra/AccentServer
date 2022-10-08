@@ -7,18 +7,18 @@ import mongoose from "mongoose";
 
 //! Creating a new post
 export const createPost = async (req, res) => {
-  const postDetails = req.body;
+	const postDetails = req.body;
 
-  const newPost = new postModel(postDetails);
+	const newPost = new postModel(postDetails);
 
-  try {
-    await newPost.save();
-    res.status(200).json(newPost);
-  } catch (error) {
-    res.status(500).json(error);
-  }
+	try {
+		await newPost.save();
+		res.status(200).json(newPost);
+	} catch (error) {
+		res.status(500).json(error);
+	}
 
-  /*
+	/*
   1. Get the post details from req.body
   2. Create a new post using the post model putting the post details
   3. Try to save it to the database.
@@ -29,25 +29,25 @@ export const createPost = async (req, res) => {
 
 //! Update a post
 export const updatePost = async (req, res) => {
-  const targetPostId = req.params.id;
+	const targetPostId = req.params.id;
 
-  const { userId } = req.body;
+	const { userId } = req.body;
 
-  try {
-    const prevPost = await postModel.findById(targetPostId);
-    if (prevPost.userId === userId) {
-      await prevPost.updateOne({ $set: req.body });
-      res.status(200).json("Post Updated successfully!");
-    } else {
-      res
-        .status(403)
-        .json("Action forbidden! You can only update your own post!");
-    }
-  } catch (error) {
-    res.status(500).json(error);
-  }
+	try {
+		const prevPost = await postModel.findById(targetPostId);
+		if (prevPost.userId === userId) {
+			await prevPost.updateOne({ $set: req.body });
+			res.status(200).json("Post Updated successfully!");
+		} else {
+			res
+				.status(403)
+				.json("Action forbidden! You can only update your own post!");
+		}
+	} catch (error) {
+		res.status(500).json(error);
+	}
 
-  /*
+	/*
   1. Get the target post id from the params
   2. Get the userId from the body
   3. Find the target post from the database using the target post id
@@ -62,27 +62,27 @@ export const updatePost = async (req, res) => {
 
 //! Delete post
 export const deletePost = async (req, res) => {
-  const targetPostId = req.params.id;
-  const currentUserId = req.params.userId;
+	const targetPostId = req.params.id;
+	const currentUserId = req.params.userId;
 
-  // We are taking both the arguments from the params since a http delete request does not allow a request to have a body.
+	// We are taking both the arguments from the params since a http delete request does not allow a request to have a body.
 
-  try {
-    const post = await postModel.findById(targetPostId);
+	try {
+		const post = await postModel.findById(targetPostId);
 
-    if (post.userId === currentUserId) {
-      await post.deleteOne();
-      res.status(200).json("Post successfully deleted!");
-    } else {
-      res
-        .status(403)
-        .json("Action forbidden! You can only delete your own post.");
-    }
-  } catch (error) {
-    res.status(500).json(error);
-  }
+		if (post.userId === currentUserId) {
+			await post.deleteOne();
+			res.status(200).json("Post successfully deleted!");
+		} else {
+			res
+				.status(403)
+				.json("Action forbidden! You can only delete your own post.");
+		}
+	} catch (error) {
+		res.status(500).json(error);
+	}
 
-  /* 
+	/* 
   1. Get the target post id from the params
   2. Get the current user id from the body
   3. Find the post in the database using the target post id
@@ -95,25 +95,25 @@ export const deletePost = async (req, res) => {
 
 //! Like/Unlike a Post
 export const likePost = async (req, res) => {
-  const targetPostId = req.params.id;
+	const targetPostId = req.params.id;
 
-  const { userId: currentUserId } = req.body;
+	const { userId: currentUserId } = req.body;
 
-  try {
-    const post = await postModel.findById(targetPostId);
+	try {
+		const post = await postModel.findById(targetPostId);
 
-    if (!post.likes.includes(currentUserId)) {
-      await post.updateOne({ $push: { likes: currentUserId } });
-      res.status(200).json("Post liked successfully!");
-    } else {
-      await post.updateOne({ $pull: { likes: currentUserId } });
-      res.status(200).json("Post unliked successfully!");
-    }
-  } catch (error) {
-    res.status(500).json(error);
-  }
+		if (!post.likes.includes(currentUserId)) {
+			await post.updateOne({ $push: { likes: currentUserId } });
+			res.status(200).json("Post liked successfully!");
+		} else {
+			await post.updateOne({ $pull: { likes: currentUserId } });
+			res.status(200).json("Post unliked successfully!");
+		}
+	} catch (error) {
+		res.status(500).json(error);
+	}
 
-  /*
+	/*
   1. Get the target post id from the params
   2. Get the current user id from the body
   3. Find the target post in the database using the target post id
@@ -127,45 +127,45 @@ export const likePost = async (req, res) => {
 
 //! Comment on a post
 export const commentPost = async (req, res) => {
-  const targetPostId = req.params.id;
+	const targetPostId = req.params.id;
 
-  try {
-    const targetPost = await postModel.findById(targetPostId);
+	try {
+		const targetPost = await postModel.findById(targetPostId);
 
-    const newComment = {
-      currentUserId: req.body.currentUserId,
-      text: req.body.text,
-    };
+		const newComment = {
+			currentUserId: req.body.currentUserId,
+			text: req.body.text,
+		};
 
-    await targetPost.updateOne({ $push: { comments: newComment } });
-    res.status(200).json("Commented Successfully!");
-  } catch (error) {
-    res.status(500).json(error);
-  }
+		await targetPost.updateOne({ $push: { comments: newComment } });
+		res.status(200).json("Commented Successfully!");
+	} catch (error) {
+		res.status(500).json(error);
+	}
 };
 
 //! Save a post
 export const savePost = async (req, res) => {
-  const targetPostId = req.params.id;
+	const targetPostId = req.params.id;
 
-  const { userId: currentUserId } = req.body;
+	const { userId: currentUserId } = req.body;
 
-  try {
-    const currentUser = await userModel.findById(currentUserId);
+	try {
+		const currentUser = await userModel.findById(currentUserId);
 
-    if (!currentUser.savedPosts.includes(targetPostId)) {
-      await currentUser.updateOne({ $push: { savedPosts: targetPostId } });
-      res.status(200).json("Post Saved!");
-    } else {
-      res.status(403).json("Post already saved by user!");
-      // await currentUser.updateOne({ $pull: { savedPosts: targetPostId } });
-      // res.status(200).json("Post Unliked!");
-    }
-  } catch (error) {
-    res.status(500).json(error);
-  }
+		if (!currentUser.savedPosts.includes(targetPostId)) {
+			await currentUser.updateOne({ $push: { savedPosts: targetPostId } });
+			res.status(200).json("Post Saved!");
+		} else {
+			res.status(403).json("Post already saved by user!");
+			// await currentUser.updateOne({ $pull: { savedPosts: targetPostId } });
+			// res.status(200).json("Post Unliked!");
+		}
+	} catch (error) {
+		res.status(500).json(error);
+	}
 
-  /*
+	/*
   1. Get the target post id from the params
   2. Get the current user id from the body
   3. Find the current user in the database using the current user id
@@ -178,22 +178,22 @@ export const savePost = async (req, res) => {
 
 //! Unsave a post
 export const unsavePost = async (req, res) => {
-  const targetPostId = req.params.id;
+	const targetPostId = req.params.id;
 
-  const { userId: currentUserId } = req.body;
+	const { userId: currentUserId } = req.body;
 
-  try {
-    const currentUser = await userModel.findById(currentUserId);
-    if (currentUser.savedPosts.includes(targetPostId)) {
-      await currentUser.updateOne({ $pull: { savedPosts: targetPostId } });
-      res.status(200).json("Post Unsaved!");
-    } else {
-      res.status(403).json("Post is not saved by user");
-    }
-  } catch (error) {
-    res.status(500).json(error);
-  }
-  /*
+	try {
+		const currentUser = await userModel.findById(currentUserId);
+		if (currentUser.savedPosts.includes(targetPostId)) {
+			await currentUser.updateOne({ $pull: { savedPosts: targetPostId } });
+			res.status(200).json("Post Unsaved!");
+		} else {
+			res.status(403).json("Post is not saved by user");
+		}
+	} catch (error) {
+		res.status(500).json(error);
+	}
+	/*
   1. Get the target post id from the params
   2. Get the current user id from the body
   3. Find the current user in the database using the current user id
@@ -206,16 +206,16 @@ export const unsavePost = async (req, res) => {
 
 //! Get a post
 export const getPost = async (req, res) => {
-  const targetPostId = req.params.id;
+	const targetPostId = req.params.id;
 
-  try {
-    const targetPost = await postModel.findById(targetPostId);
-    res.status(200).json(targetPost);
-  } catch (error) {
-    res.status(500).json(error);
-  }
+	try {
+		const targetPost = await postModel.findById(targetPostId);
+		res.status(200).json(targetPost);
+	} catch (error) {
+		res.status(500).json(error);
+	}
 
-  /*
+	/*
   1. Get the target post id from the params
   2. Find the post in the database using the target post id
   3. Return the post
@@ -225,61 +225,61 @@ export const getPost = async (req, res) => {
 
 //! Get all posts of a user
 export const getUserPosts = async (req, res) => {
-  const targetUserId = req.params.userId;
+	const targetUserId = req.params.userId;
 
-  try {
-    const targetUserPosts = await postModel.find({ userId: targetUserId });
-    res.status(200).json(
-      targetUserPosts.sort((a, b) => {
-        return b.createdAt - a.createdAt;
-      })
-    );
-  } catch (error) {
-    res.status(500).json(error);
-  }
+	try {
+		const targetUserPosts = await postModel.find({ userId: targetUserId });
+		res.status(200).json(
+			targetUserPosts.sort((a, b) => {
+				return b.createdAt - a.createdAt;
+			})
+		);
+	} catch (error) {
+		res.status(500).json(error);
+	}
 };
 
 //! Get Following Posts
 export const getFollowingPosts = async (req, res) => {
-  const currentUserId = req.params.id;
+	const currentUserId = req.params.id;
 
-  try {
-    const currentUserPosts = await postModel.find({ userId: currentUserId });
+	try {
+		const currentUserPosts = await postModel.find({ userId: currentUserId });
 
-    const followingUserPosts = await userModel.aggregate([
-      {
-        $match: {
-          _id: new mongoose.Types.ObjectId(currentUserId),
-        },
-      },
-      {
-        $lookup: {
-          from: "posts",
-          localField: "following",
-          foreignField: "userId",
-          as: "followingUserPosts",
-        },
-      },
-      {
-        $project: {
-          followingUserPosts: 1,
-          _id: 0,
-        },
-      },
-    ]);
+		const followingUserPosts = await userModel.aggregate([
+			{
+				$match: {
+					_id: new mongoose.Types.ObjectId(currentUserId),
+				},
+			},
+			{
+				$lookup: {
+					from: "posts",
+					localField: "following",
+					foreignField: "userId",
+					as: "followingUserPosts",
+				},
+			},
+			{
+				$project: {
+					followingUserPosts: 1,
+					_id: 0,
+				},
+			},
+		]);
 
-    res.status(200).json(
-      currentUserPosts
-        .concat(...followingUserPosts[0].followingUserPosts)
-        .sort((a, b) => {
-          return b.createdAt - a.createdAt;
-        })
-    );
-  } catch (error) {
-    res.status(500).json(error);
-  }
+		res.status(200).json(
+			currentUserPosts
+				.concat(...followingUserPosts[0].followingUserPosts)
+				.sort((a, b) => {
+					return b.createdAt - a.createdAt;
+				})
+		);
+	} catch (error) {
+		res.status(500).json(error);
+	}
 
-  /*
+	/*
   1. This request will get all the posts by the followings of the current user as well as his own posts
   2. Get the current user id from the params.
   3. Get all the posts by the current user from the post model using find({userId: currentUserId})
@@ -295,28 +295,28 @@ export const getFollowingPosts = async (req, res) => {
 
 //! Get the saved Posts of a user
 export const getSavedPosts = async (req, res) => {
-  const currentUserId = req.params.id;
+	const currentUserId = req.params.id;
 
-  try {
-    const currentUser = await userModel.findById(currentUserId);
+	try {
+		const currentUser = await userModel.findById(currentUserId);
 
-    const savedPosts = await Promise.all(
-      currentUser.savedPosts.map((postId) => {
-        return postModel.findById(postId);
-      })
-    );
+		const savedPosts = await Promise.all(
+			currentUser.savedPosts.map((postId) => {
+				return postModel.findById(postId);
+			})
+		);
 
-    // if the savedPosts array of a user contains ids of posts which were deleted by its creator, then the above savedPosts array will contain null elements. So we filter out the null elements and return the result
-    const result = savedPosts.filter((post) => {
-      return post !== null;
-    });
+		// if the savedPosts array of a user contains ids of posts which were deleted by its creator, then the above savedPosts array will contain null elements. So we filter out the null elements and return the result
+		const result = savedPosts.filter((post) => {
+			return post !== null;
+		});
 
-    res.status(200).json(result);
-  } catch (error) {
-    res.status(500).json(error);
-  }
+		res.status(200).json(result);
+	} catch (error) {
+		res.status(500).json(error);
+	}
 
-  /* 
+	/* 
   1. Get the current users id from the params
   2. Get the current users details using the id.
   3. Create a savedPosts array by mapping through the savedPosts array of the current user.
@@ -328,16 +328,16 @@ export const getSavedPosts = async (req, res) => {
 
 //! Get Newest Posts
 export const getNewestPosts = async (req, res) => {
-  try {
-    const newestPosts = await postModel.aggregate([
-      { $sort: { createdAt: -1 } },
-    ]);
-    res.status(200).json(newestPosts);
-  } catch (error) {
-    res.status(500).json(error);
-  }
+	try {
+		const newestPosts = await postModel.aggregate([
+			{ $sort: { createdAt: -1 } },
+		]);
+		res.status(200).json(newestPosts);
+	} catch (error) {
+		res.status(500).json(error);
+	}
 
-  /*
+	/*
   1. Get all the posts from the post model using the aggregate method.
   2. Sort the posts in descending order using $sort stage by the 'createdAt' field
   3. Return the posts and success message
@@ -347,17 +347,17 @@ export const getNewestPosts = async (req, res) => {
 
 //! Get most Popular Posts
 export const getPopularPosts = async (req, res) => {
-  try {
-    const popularPosts = await postModel.aggregate([
-      { $addFields: { likesCount: { $size: "$likes" } } },
-      { $sort: { likesCount: -1 } },
-    ]);
-    res.status(200).json(popularPosts);
-  } catch (error) {
-    res.status(500).json(error);
-  }
+	try {
+		const popularPosts = await postModel.aggregate([
+			{ $addFields: { likesCount: { $size: "$likes" } } },
+			{ $sort: { likesCount: -1 } },
+		]);
+		res.status(200).json(popularPosts);
+	} catch (error) {
+		res.status(500).json(error);
+	}
 
-  /*
+	/*
   1. Get the most popular posts using the aggregate function
   2. Add the field likesCount to the post using the $addFields stage
   3. Sort the posts using the 'likesCount' field and return

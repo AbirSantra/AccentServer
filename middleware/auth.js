@@ -12,7 +12,7 @@ const auth = async (req, res, next) => {
 		if (token) {
 			const decodedData = jwt.verify(token, secret);
 
-			req.body._id = decodedData?.id;
+			req.body.userId = decodedData?.id;
 		}
 		next();
 	} catch (error) {
