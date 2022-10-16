@@ -7,7 +7,7 @@ import cors from "cors";
 import AuthRoute from "./routes/AuthRoute.js";
 import UserRoute from "./routes/UserRoute.js";
 import PostRoute from "./routes/PostRoute.js";
-import Stripe from "stripe";
+// import Stripe from "stripe";
 
 // Initializing the app server
 const app = express();
@@ -20,7 +20,7 @@ app.use(cors());
 dotenv.config();
 
 // Stripe Payments
-const stripe = new Stripe(process.env.STRIPE_SECRET);
+// const stripe = new Stripe(process.env.STRIPE_SECRET);
 
 // MongoDB Atlas Connection
 mongoose
