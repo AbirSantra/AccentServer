@@ -9,9 +9,9 @@
 
 Accent is a platform for creators. One can be a painter, a digital artist, a photographer, or just any creator and Accent provides them with a platform to showcase their creations, gain a following, even accepts tips from their followers! <br>
 
-# [Demo Link](https://accentapp.netlify.app/home) <br>
+## [Demo Link](https://accentapp.netlify.app/home) <br>
 
-# Frontend Repository Link: [Click Here](https://github.com/AbirSantra/AccentApp)
+## Frontend Repository Link: [Click Here](https://github.com/AbirSantra/AccentApp)
 
 ---
 
