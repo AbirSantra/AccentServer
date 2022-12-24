@@ -19,9 +19,6 @@ app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
 app.use(cors());
 dotenv.config();
 
-// Stripe Payments
-// const stripe = new Stripe(process.env.STRIPE_SECRET);
-
 // MongoDB Atlas Connection
 mongoose
 	.connect(process.env.MONGO_URI, {
