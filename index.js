@@ -7,17 +7,18 @@ import cors from "cors";
 import AuthRoute from "./routes/AuthRoute.js";
 import UserRoute from "./routes/UserRoute.js";
 import PostRoute from "./routes/PostRoute.js";
-// import Stripe from "stripe";
+import cookieParser from "cookie-parser";
 
 // Initializing the app server
 const app = express();
+dotenv.config();
 
 // Middleware
+app.use(cors());
 app.use(bodyParser.json({ limit: "30mb", extended: true }));
 app.use(bodyParser.text({ limit: "30mb", extended: true }));
 app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
-app.use(cors());
-dotenv.config();
+app.use(cookieParser());
 
 // MongoDB Atlas Connection
 mongoose
