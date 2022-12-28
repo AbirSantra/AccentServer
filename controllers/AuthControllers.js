@@ -2,98 +2,181 @@
 // These are basically the logic that is carried out when a specific route is called.
 
 import userModel from "../models/userModel.js";
-import bcrypt from "bcrypt";
+import bcrypt, { hash } from "bcrypt";
 import jwt from "jsonwebtoken";
 
-//! Registering a new user
+//! REGISTER USER
 export const registerUser = async (req, res) => {
-  const { username, email, password, firstname, lastname } = req.body;
+	const { username, email, password, firstname, lastname } = req.body;
 
-  const salt = await bcrypt.genSalt(10); //generating salt
+	// Check if all fields are present
+	if (!username || !email || !password || !firstname || !lastname) {
+		return res.status(400).json({ message: "All fields are required!" });
+	}
 
-  const hashedPass = await bcrypt.hash(password, salt); //generating hashed password
+	try {
+		// Check if username exists
+		const existingUsername = await userModel.findOne({ username });
+		if (existingUsername) {
+			return res.status(409).json({ message: "Username is already taken!" });
+		}
 
-  const newUser = new userModel({
-    username,
-    email,
-    password: hashedPass,
-    firstname,
-    lastname,
-  });
+		// Check if email already exists
+		const existingEmail = await userModel.findOne({ email });
+		if (existingEmail) {
+			return res
+				.status(409)
+				.json({ message: "This email is already registered!" });
+		}
 
-  try {
-    const existingUser = await userModel.findOne({ username });
+		// Hash the password
+		const hashedPass = await bcrypt.hash(password, 10);
 
-    if (existingUser) {
-      return res.status(400).json({ message: "Username is already taken!" });
-    }
+		// Create user model
+		const user = new userModel({
+			username,
+			password: hashedPass,
+			email,
+			firstname,
+			lastname,
+		});
 
-    const user = await newUser.save();
+		// Save the user in database
+		const newUser = await user.save();
 
-    const token = jwt.sign(
-      {
-        // creating the token using username and id
-        username: user.username,
-        id: user._id,
-      },
-      process.env.JWT_SECRET, // token secret
-      { expiresIn: "1h" } // time to live of token
-    );
-
-    res.status(200).json({ user, token });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-
-  // Here we are receiving the user details from the frontend in req.body.
-  // Then we are using bcrypt to generate a salt for the password and then using that salt to generate a hashed password for the user.
-  // Then we are creating a new user using the userModel and putting the hashed password instead of the plain password.
-  // Check if the username is already taken and return error message if yes.
-  // Then we are saving that newUser in the database.
-  // Create a jwt token for the new user.
-  // If it is successfully saved, we are returning the new user and the token
-  // If an error occurs, we are showing the error message.
+		// Send response is user is created
+		if (newUser) {
+			res
+				.status(200)
+				.json({ message: `New user ${username} is successfully created!` });
+		}
+	} catch (error) {
+		res.status(500).json({ message: error.message });
+	}
 };
 
-//! Loging in an Exisiting User
+//! LOGIN USER
 export const loginUser = async (req, res) => {
-  const { username, password } = req.body;
+	const { username, password } = req.body;
 
-  try {
-    const user = await userModel.findOne({ username: username });
+	// Check if username or password is missing
+	if (!username || !password) {
+		return res.status(400).json({ message: "Username or Password missing!" });
+	}
 
-    if (user) {
-      const validity = await bcrypt.compare(password, user.password);
+	try {
+		// Find the user using username
+		const user = await userModel.findOne({ username });
 
-      if (!validity) {
-        res.status(400).json({
-          message: "Wrong Password! Please check your password and try again.",
-        });
-      } else {
-        const token = jwt.sign(
-          {
-            username: user.username,
-            id: user._id,
-          },
-          process.env.JWT_SECRET, // token secret
-          { expiresIn: "1h" } // time to live of token
-        );
+		// If user does not exist
+		if (!user) {
+			return res.status(404).json({ message: "User not found!" });
+		}
 
-        res.status(200).json({ user, token });
-      }
-    } else {
-      res.status(404).json({ message: "User does not exist!" });
-    }
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
+		// Check for password validity
+		const isPasswordValid = await bcrypt.compare(password, user.password);
 
-  // Receive the username and pass from the frontend through req.body
-  // Try to search for the username in the database.
-  // If the user exists in the database, check for the password.
-  // 'Validity' returns a boolean of whether the entered password matches with the hashed password
-  // If validity is true, it means the passwords match; create a token and return
-  // Else if the validity is false, it means the passwords do not match; Return "Wrong Password" error message
-  // Else if the user doesn't exist in the database, then return "Wrong Username" error message.
-  // If any other error, return server error message.
+		// If password is not valid
+		if (!isPasswordValid) {
+			return res.status(401).json({ message: "Wrong Password" });
+		}
+
+		// Generate Access Token
+		const accessToken = jwt.sign(
+			{
+				username: user.username,
+				id: user._id,
+			},
+			process.env.ACCESS_SECRET,
+			{ expiresIn: "10000" }
+		);
+
+		// Generate Refresh Token
+		const refreshToken = jwt.sign(
+			{
+				id: user._id,
+			},
+			process.env.REFRESH_SECRET,
+			{ expiresIn: "30000" }
+		);
+
+		// Set refresh token as cookie
+		res.cookie("jwt", refreshToken, {
+			httpOnly: true,
+			secure: true,
+			// sameSite: "None",
+			maxAge: 30 * 1000,
+		});
+
+		// Send response
+		res.status(200).json({
+			user,
+			accessToken,
+		});
+	} catch (error) {
+		res.status(500).json({ message: error.message });
+	}
+};
+
+//! REFRESH ACCESS TOKEN
+export const refresh = (req, res) => {
+	// Get the cookie
+	const cookies = req.cookies;
+
+	// If jwt cookie does not exist
+	if (!cookies?.jwt) {
+		return res.status(401).json({ message: "JWT not found!" });
+	}
+
+	// Get the refresh token
+	const refreshToken = cookies.jwt;
+
+	// Verify token
+	jwt.verify(refreshToken, process.env.REFRESH_SECRET, async (err, decoded) => {
+		// If token expired
+		if (err) {
+			return res.status(403).json({ message: "Refresh token expired" });
+		}
+
+		// Check the contents of the token
+		const user = await userModel.findById(decoded.id);
+
+		// If user does not exist
+		if (!user) {
+			return res.status(401).json({ message: "Unauthorized!" });
+		}
+
+		// Generate new access token
+		const accessToken = jwt.sign(
+			{
+				username: user.username,
+				id: user._id,
+			},
+			process.env.ACCESS_SECRET,
+			{ expiresIn: "10000" }
+		);
+
+		// Send response
+		res.status(200).json({ user, accessToken });
+	});
+};
+
+//! LOGOUT USER
+export const logout = async (req, res) => {
+	const cookies = req.cookies;
+
+	// Check if cookies exist
+	if (!cookies?.jwt) {
+		return res.status(200).json({ message: "No cookies to clear" });
+	}
+
+	// Clear the existing cookies
+	res.clearCookie("jwt", {
+		httpOnly: true,
+		secure: true,
+		sameSite: "None",
+	});
+
+	// Send response
+	res.status(200).json({ message: "Cookies successfully cleared!" });
 };
