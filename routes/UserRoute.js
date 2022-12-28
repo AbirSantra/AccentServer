@@ -16,7 +16,9 @@ import auth from "../middleware/auth.js";
 
 const router = express.Router();
 
-router.get("/:id", getUser); // getting user's details
+router.use(auth); // JWT Middleware
+
+router.get("/:id", auth, getUser); // getting user's details
 
 router.get("/search/:query", getUserSearch); // getting users through search
 
