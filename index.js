@@ -21,6 +21,11 @@ app.use(bodyParser.text({ limit: "30mb", extended: true }));
 app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
 app.use(cookieParser());
 
+//Routes
+app.use("/auth", AuthRoute); //-> Authentication Routes
+app.use("/user", UserRoute); //-> User Action Routes
+app.use("/post", PostRoute); //-> Post Actions Routes
+
 // MongoDB Atlas Connection
 mongoose
 	.connect(process.env.MONGO_URI, {
@@ -33,8 +38,3 @@ mongoose
 		)
 	)
 	.catch((error) => console.log(error));
-
-//Routes
-app.use("/auth", AuthRoute); //-> Authentication Routes
-app.use("/user", UserRoute); //-> User Action Routes
-app.use("/post", PostRoute); //-> Post Actions Routes
