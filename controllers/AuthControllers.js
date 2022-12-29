@@ -88,7 +88,7 @@ export const loginUser = async (req, res) => {
 				id: user._id,
 			},
 			process.env.ACCESS_SECRET,
-			{ expiresIn: "10000" }
+			{ expiresIn: "15m" }
 		);
 
 		// Generate Refresh Token
@@ -97,15 +97,15 @@ export const loginUser = async (req, res) => {
 				id: user._id,
 			},
 			process.env.REFRESH_SECRET,
-			{ expiresIn: "30000" }
+			{ expiresIn: "1d" }
 		);
 
 		// Set refresh token as cookie
 		res.cookie("jwt", refreshToken, {
 			httpOnly: true,
 			secure: true,
-			// sameSite: "None",
-			maxAge: 30 * 1000,
+			sameSite: "None",
+			maxAge: 24 * 60 * 60 * 1000,
 		});
 
 		// Send response
@@ -135,7 +135,8 @@ export const refresh = (req, res) => {
 	jwt.verify(refreshToken, process.env.REFRESH_SECRET, async (err, decoded) => {
 		// If token expired
 		if (err) {
-			return res.status(403).json({ message: "Refresh token expired" });
+			console.log(err);
+			return res.status(401).json({ message: "Refresh token expired" });
 		}
 
 		// Check the contents of the token
@@ -153,7 +154,7 @@ export const refresh = (req, res) => {
 				id: user._id,
 			},
 			process.env.ACCESS_SECRET,
-			{ expiresIn: "10000" }
+			{ expiresIn: "15m" }
 		);
 
 		// Send response
