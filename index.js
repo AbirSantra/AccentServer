@@ -7,20 +7,19 @@ import cors from "cors";
 import AuthRoute from "./routes/AuthRoute.js";
 import UserRoute from "./routes/UserRoute.js";
 import PostRoute from "./routes/PostRoute.js";
-// import Stripe from "stripe";
+import cookieParser from "cookie-parser";
+import corsOptions from "./config/corsOptions.js";
 
 // Initializing the app server
 const app = express();
+dotenv.config();
 
 // Middleware
+app.use(cors(corsOptions));
 app.use(bodyParser.json({ limit: "30mb", extended: true }));
 app.use(bodyParser.text({ limit: "30mb", extended: true }));
 app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
-app.use(cors());
-dotenv.config();
-
-// Stripe Payments
-// const stripe = new Stripe(process.env.STRIPE_SECRET);
+app.use(cookieParser());
 
 // MongoDB Atlas Connection
 mongoose
