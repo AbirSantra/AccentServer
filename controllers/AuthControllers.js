@@ -88,7 +88,7 @@ export const loginUser = async (req, res) => {
 				id: user._id,
 			},
 			process.env.ACCESS_SECRET,
-			{ expiresIn: "15m" }
+			{ expiresIn: "1h" }
 		);
 
 		// Generate Refresh Token
@@ -154,7 +154,7 @@ export const refresh = (req, res) => {
 				id: user._id,
 			},
 			process.env.ACCESS_SECRET,
-			{ expiresIn: "15m" }
+			{ expiresIn: "1h" }
 		);
 
 		// Send response
