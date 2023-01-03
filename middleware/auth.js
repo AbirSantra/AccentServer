@@ -20,7 +20,6 @@ const auth = (req, res, next) => {
 			return res.status(403).json({ message: "Access Token expired!" });
 		}
 
-		req.body.username = decoded.username;
 		req.body.userId = decoded.id;
 
 		next();
