@@ -36,9 +36,24 @@ const UserSchema = mongoose.Schema(
 		livesIn: String,
 		worksAt: String,
 		skills: String,
-		followers: [],
-		following: [],
-		savedPosts: [],
+		followers: [
+			{
+				type: mongoose.Schema.Types.ObjectId,
+				ref: "Users",
+			},
+		],
+		following: [
+			{
+				type: mongoose.Schema.Types.ObjectId,
+				ref: "Users",
+			},
+		],
+		savedPosts: [
+			{
+				type: mongoose.Schema.Types.ObjectId,
+				ref: "Posts",
+			},
+		],
 		donationLink: String,
 	},
 	{ timestamps: true }
