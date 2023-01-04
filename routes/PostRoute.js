@@ -12,6 +12,7 @@ import {
 	getPost,
 	getSavedPosts,
 	getUserPosts,
+	getPostComments,
 	likePost,
 	savePost,
 	unsavePost,
@@ -41,6 +42,8 @@ router.delete("/:id/:userId", deletePost); //-> Delete a post
 router.put("/:id/like", likePost); //-> Like/Unlike a post
 
 router.put("/:id/comment", commentPost); //-> Comment on a post
+
+router.get("/:id/comments", getPostComments); //-> Get all the comments of a post
 
 router.put("/:id/save", savePost); //-> Save/Unsave a post
 

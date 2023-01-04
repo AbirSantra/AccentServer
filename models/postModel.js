@@ -13,18 +13,30 @@ Requirements of a Post
 
 // Post schema definition
 const postSchema = mongoose.Schema(
-  {
-    userId: { type: String, required: true },
-    title: String,
-    desc: String,
-    tags: String,
-    likes: [],
-    comments: [],
-    image: String,
-  },
-  {
-    timestamps: true,
-  }
+	{
+		userId: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "Users",
+			required: true,
+		},
+		title: String,
+		desc: String,
+		tags: String,
+		likes: [],
+		comments: [
+			{
+				user: {
+					type: mongoose.Schema.Types.ObjectId,
+					ref: "Users",
+				},
+				text: String,
+			},
+		],
+		image: String,
+	},
+	{
+		timestamps: true,
+	}
 );
 
 // Post model deifinition
