@@ -6,6 +6,29 @@ import userModel from "../models/userModel.js";
 import mongoose from "mongoose";
 
 //! Creating a new post
+/**
+ * @api {post} /post/ Create New Post
+ * @apiName Create Post
+ * @apiGroup Post
+ * @apiDescription This endpoint is used for creating a post. It requires the post details as the request body. It returns back the details of the newly created post.
+ *
+ * @apiBody {String} userId Unique ID of the user
+ * @apiBody {String} title Title of the Post
+ * @apiBody {String} desc Description of the Post
+ * @apiBody {Image} image Image URL of the post image
+ *
+ *
+ * @apiSuccess {String} firstname Firstname of the User.
+ * @apiSuccess {String} lastname  Lastname of the User.
+ *
+ * @apiSuccessExample Success-Response:
+ *     200 OK
+ *     {
+ *       <Post Details>
+ *     }
+ *
+ * @apiError (500) Internal Server Error
+ */
 export const createPost = async (req, res) => {
 	const postDetails = req.body;
 
@@ -23,6 +46,24 @@ export const createPost = async (req, res) => {
 };
 
 //! Update a post
+/**
+ * @api {put} /post/:id Update a Post
+ * @apiName Update Post
+ * @apiGroup Post
+ * @apiDescription This endpoint can be used to update a specific post. The target post ID is passed in the params and the current user's ID should be passed in the request body. This returns a success message on successful updation.
+ *
+ *
+ * @apiParam {String} id Post's unique id
+ *
+ * @apiSuccessExample {json} Success-Response:
+ * 200 OK
+ * {
+ * 	"Post updated successfully!"
+ * }
+ *
+ * @apiError 403 Action forbidden. User tried to delete someone else's post
+ * @apiError (500) 500 Internal Server Error
+ */
 export const updatePost = async (req, res) => {
 	const targetPostId = req.params.id;
 	const { userId } = req.body;
@@ -47,6 +88,25 @@ export const updatePost = async (req, res) => {
 };
 
 //! Delete post
+/**
+ * @api {delete} /post/:id/:userId Delete a Post
+ * @apiName Delete Post
+ * @apiGroup Post
+ * @apiDescription This endpoint can be used to delete a post. This requires the target post's ID to be passed in the params and the current user's ID to be passed in the request body. Returns a success message of deletion.
+ *
+ *
+ * @apiParam {String} id Post's unique id
+ * @apiParam {String} userId User's unique id
+ *
+ * @apiSuccessExample {json} Success-Response:
+ * 200 OK
+ * {
+ * 	"Post successfully deleted!"
+ * }
+ *
+ * @apiError 403 Action Forbidden. User tried to delete someone else's post.
+ * @apiError (500) 500 Internal Server Error
+ */
 export const deletePost = async (req, res) => {
 	const targetPostId = req.params.id;
 	const currentUserId = req.params.userId;
@@ -72,6 +132,28 @@ export const deletePost = async (req, res) => {
 };
 
 //! Like/Unlike a Post
+/**
+ * @api {put} /post/:id/like Like/Unlike a Post
+ * @apiName Like Post
+ * @apiGroup Post
+ * @apiDescription This endpoint can be used to like/unlike a post. This requires the taget post's ID to be passed in the params and the current user's ID to be passed in the request body. If the post was not previously liked by the user, then the post is liked. Else, the post is unliked. Returns respective success message.
+ *
+ *
+ * @apiParam {String} id Post's ID to like
+ *
+ * @apiSuccessExample {json} Success-Liked:
+ * 200 OK
+ * {
+ * 	"Post liked successfully!"
+ * }
+ * @apiSuccessExample {json} Success-UnLiked:
+ * 200 OK
+ * {
+ * 	"Post unliked successfully!"
+ * }
+ *
+ * @apiError (500) 500 Internal Server Error
+ */
 export const likePost = async (req, res) => {
 	const targetPostId = req.params.id;
 
@@ -97,6 +179,28 @@ export const likePost = async (req, res) => {
 };
 
 //! Comment on a post
+/**
+ * @api {put} /post/:id/comment Comment on a Post
+ * @apiName Comment on Post
+ * @apiGroup Post
+ * @apiDescription This endpoint can be used to comment on a post. It requires the target post's ID to be passed in the params and the comment details to be passed in the request body. Returns a success message.
+ *
+ *
+ * @apiParam {String} id Post's ID to comment
+ *
+ *
+ * @apiBody {String} user Unique ID of the user
+ * @apiBody {String} text Text of the comment
+ *
+ * @apiSuccessExample {json} Success-Response:
+ * 200 OK
+ * {
+ * 	"Commented successfully!"
+ * }
+ *
+ *
+ * @apiError (500) 500 Internal Server Error
+ */
 export const commentPost = async (req, res) => {
 	const targetPostId = req.params.id;
 
@@ -119,6 +223,27 @@ export const commentPost = async (req, res) => {
 };
 
 //! Save a post
+/**
+ * @api {put} /post/:id/save Save a post
+ * @apiName Save a post
+ * @apiGroup Post
+ * @apiDescription This endpoint can be used to save a post. This requires the target post's ID to be passed in the params and current user's ID in the request body. Returns a success message on save.
+ *
+ * @apiParam {String} id ID of the target post
+ *
+ * @apiBody {String} id ID of the post
+ * @apiBody {String} userId ID of the user saving the post
+ *
+ * @apiSuccessExample {json} Success-Response:
+ * 200 OK
+ * {
+ * 	"Post Saved!"
+ * }
+ *
+ *
+ * @apiError 403 Post is already saved by the user
+ * @apiError (500) 500 Internal Server Error
+ */
 export const savePost = async (req, res) => {
 	const targetPostId = req.params.id;
 
@@ -141,6 +266,27 @@ export const savePost = async (req, res) => {
 };
 
 //! Unsave a post
+/**
+ * @api {put} /post/:id/unsave Unsave a post
+ * @apiName Unsave a post
+ * @apiGroup Post
+ * @apiDescription This endpoint can be used to unsave a post. This requires the target post's ID to be passed in the params and current user's ID in the request body. Returns a success message on unsave.
+ *
+ * @apiParam {String} id ID of the target post
+ *
+ * @apiBody {String} id ID of the post
+ * @apiBody {String} userId ID of the user unsaving the post
+ *
+ * @apiSuccessExample {json} Success-Reponse:
+ * 200 OK
+ * {
+ * 	"Post Unsaved!"
+ * }
+ *
+ *
+ * @apiError 403 Post is not saved by the user already.
+ * @apiError (500) 500 Internal Server Error
+ */
 export const unsavePost = async (req, res) => {
 	const targetPostId = req.params.id;
 
@@ -163,6 +309,25 @@ export const unsavePost = async (req, res) => {
 };
 
 //! Get a post
+/**
+ * @api {get} /post/:id Get a Post
+ * @apiName Get a Post
+ * @apiGroup Post
+ * @apiDescription This endpoint can be used to get the details of a post. This requires the target post's ID to be passed in the params. It returns an object containing the details of the post.
+ *
+ * @apiParam {String} id ID of the post
+ *
+ *
+ * @apiSuccessExample {json} Success-Response:
+ * 200 OK
+ * {
+ * 	<Post Details>
+ * }
+ *
+ *
+ * @apiError 403 Post is not saved by the user already.
+ * @apiError (500) 500 Internal Server Error
+ */
 export const getPost = async (req, res) => {
 	const targetPostId = req.params.id;
 
@@ -178,6 +343,26 @@ export const getPost = async (req, res) => {
 };
 
 //! Get all posts of a user
+/**
+ * @api {get} /post/:userId/posts Get all posts of User
+ * @apiName Get User Posts
+ * @apiGroup Post
+ * @apiDescription This endpoint can be used to get the all the posts created by a user. This requires the target users's ID to be passed in the params. It returns an array of post-details objects.
+ *
+ * @apiParam {String} userId ID of the post
+ *
+ *
+ * @apiSuccessExample {json} Success-response:
+ * 200 OK
+ * [
+ * {<Post 1 details>},
+ * {<Post 2 details>},
+ * ...
+ * ]
+ *
+ *
+ * @apiError (500) 500 Internal Server Error
+ */
 export const getUserPosts = async (req, res) => {
 	const targetUserId = req.params.userId;
 
@@ -202,6 +387,26 @@ export const getUserPosts = async (req, res) => {
 };
 
 //! Get the saved Posts of a user
+/**
+ * @api {get} /post/:id/savedPosts Get saved posts
+ * @apiName Get Saved Posts
+ * @apiGroup Post
+ * @apiDescription This endpoint can be used to get the all the posts saved by a user. This requires the target users's ID to be passed in the params. It returns an array of post-details objects.
+ *
+ * @apiParam {String} id ID of the user
+ *
+ *
+ * @apiSuccessExample {json} Success-Response:
+ * 200 OK
+ * [
+ * {<Post 1 details>},
+ * {<Post 2 details>},
+ * ...
+ * ]
+ *
+ *
+ * @apiError (500) 500 Internal Server Error
+ */
 export const getSavedPosts = async (req, res) => {
 	const currentUserId = req.params.id;
 
@@ -227,6 +432,26 @@ export const getSavedPosts = async (req, res) => {
 };
 
 //! Get the comments of a post
+/**
+ * @api {get} /post/:id/comments Get post comments
+ * @apiName Get Post Comments
+ * @apiGroup Post
+ * @apiDescription This endpoint can be used to get the all the comments of a post. This requires the target post's ID to be passed in the params. It returns an array of comment-details objects.
+ *
+ * @apiParam {String} id ID of the post
+ *
+ *
+ * @apiSuccessExample {json} Success-Response:
+ * 200 OK
+ * [
+ * {<Comment 1 details>},
+ * {<Comment 2 details>},
+ * ...
+ * ]
+ *
+ *
+ * @apiError (500) 500 Internal Server Error
+ */
 export const getPostComments = async (req, res) => {
 	const targetPostId = req.params.id;
 
@@ -247,6 +472,26 @@ export const getPostComments = async (req, res) => {
 };
 
 //! Get Following Posts
+/**
+ * @api {get} /post/:id/followingPosts Get following Posts
+ * @apiName Get Following Posts
+ * @apiGroup Post
+ * @apiDescription This endpoint can be used to get all posts created by users whom the current user is following along with their own posts. This requires the target users's ID to be passed in the params. It returns an array of post-details objects.
+ *
+ * @apiParam {String} id ID of the user
+ *
+ *
+ * @apiSuccessExample {json} Success-Response:
+ * 200 OK
+ * [
+ * {<Post 1 details>},
+ * {<Post 2 details>},
+ * ...
+ * ]
+ *
+ *
+ * @apiError (500) 500 Internal Server Error
+ */
 export const getFollowingPosts = async (req, res) => {
 	const currentUserId = req.params.id;
 
@@ -277,6 +522,25 @@ export const getFollowingPosts = async (req, res) => {
 };
 
 //! Get Newest Posts
+/**
+ * @api {get} /post/newest Get Newest Posts
+ * @apiName Get Newest Posts
+ * @apiGroup Post
+ * @apiDescription This endpoint can be used to get all posts in the order of their creation time. It returns an array of post-details objects.
+ *
+ *
+ *
+ * @apiSuccessExample {json} Success-Response:
+ * 200 OK
+ * [
+ * {<Post 1 details>},
+ * {<Post 2 details>},
+ * ...
+ * ]
+ *
+ *
+ * @apiError (500) 500 Internal Server Error
+ */
 export const getNewestPosts = async (req, res) => {
 	try {
 		// get all the posts and populate the userId field
@@ -296,6 +560,25 @@ export const getNewestPosts = async (req, res) => {
 };
 
 //! Get most Popular Posts
+/**
+ * @api {get} /post/popular Get Popular Posts
+ * @apiName Get Popular Posts
+ * @apiGroup Post
+ * @apiDescription This endpoint can be used to get all posts in the order of their popularity based on their number of likes. It returns an array of post-details objects.
+ *
+ *
+ *
+ * @apiSuccessExample {json} Success-Response:
+ * 200 OK
+ * [
+ * {<Post 1 details>},
+ * {<Post 2 details>},
+ * ...
+ * ]
+ *
+ *
+ * @apiError (500) 500 Internal Server Error
+ */
 export const getPopularPosts = async (req, res) => {
 	try {
 		// get all the posts, sort the posts in descending order of likes count and populate the userId field
