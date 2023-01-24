@@ -5,6 +5,24 @@ import bycrpt from "bcrypt";
 import mongoose from "mongoose";
 
 //! Getting user details
+/**
+ * @api {get} /user/:id Get User Details
+ * @apiName Get User
+ * @apiGroup User
+ * @apiDescription This endpoint can be used to get the details of a user. This requires the target user's ID to be passed in the params. Returns an object containing the user details.
+ *
+ *
+ * @apiParam {Number} id User's unique ID.
+ *
+ * @apiSuccessExample {json} Success-Response:
+ * 200 OK
+ * {
+ * 	<User Details>
+ * }
+ *
+ * @apiError 404 User not found
+ * @apiError (500) 500 Internal Server Error
+ */
 export const getUser = async (req, res) => {
 	const userId = req.params.id;
 
@@ -22,17 +40,24 @@ export const getUser = async (req, res) => {
 	} catch (error) {
 		res.status(500).json({ message: error.message });
 	}
-
-	// First, get the user ID from the params (ID is passed as param in the URL not in the body)
-	// Try to find the user in the database using the findById() method
-	// If the user exists, the details are received under user._doc
-	// Destructure the user details to separate the password from the other details
-	// Send the other details of the user back to the frontend
-	// If the user does not exist, send message "User not found!"
-	// If any other error, send the server error message.
 };
 
 //! Getting User through search
+/**
+ * @api {get} /user/search/:query Get User through Search
+ * @apiName Get User Search
+ * @apiGroup User
+ * @apiDescription This endpoint can be used to search for users. This requires the target user's firstname, lastname or username to be passed in the params. Returns an array of all users matching the search query.
+ *
+ *
+ * @apiParam {String} query Search query (username, firstname or lastname)
+ *
+ * @apiSuccessExample {json} Success-Response:
+ * 200 OK
+ * [{<User 1 details>},{<User 2 details>},...]
+ *
+ * @apiError (500) 500 Internal Server Error
+ */
 export const getUserSearch = async (req, res) => {
 	const query = req.params.query;
 
@@ -54,6 +79,25 @@ export const getUserSearch = async (req, res) => {
 };
 
 //! Updating User details
+/**
+ * @api {put} /user/:id Update User's Details
+ * @apiName Update User
+ * @apiGroup User
+ * @apiDescription This endpoint can be used to update the details of a user. This requires the target user's ID to be passed in the params and the details to be updated in the request body. Returns an object containing the updated user details.
+ *
+ *
+ * @apiParam {String} id User's unique id
+ *
+ * @apiSuccessExample {json} Success-Response:
+ * 200 OK
+ * {
+ * 	<Updated User's details>
+ * }
+ *
+ * @apiError 400 Username is already taken
+ * @apiError 403 Access denied
+ * @apiError (500) 500 Internal Server Error
+ */
 export const updateUser = async (req, res) => {
 	const userId = req.params.id;
 
@@ -95,6 +139,24 @@ export const updateUser = async (req, res) => {
 };
 
 //! Deleting a user
+/**
+ * @api {delete} /user/:id Delete a User
+ * @apiName Delete User
+ * @apiGroup User
+ * @apiDescription This endpoint can be used to delete a user. This requires the target user's ID to be passed in the params. Returns a success message on deletion.
+ *
+ *
+ * @apiParam {String} id User's unique id
+ *
+ * @apiSuccessExample {json} Success-Response:
+ * 200 OK
+ * {
+ * 	"message": "User successfully deleted!"
+ * }
+ *
+ * @apiError 403 Access denied
+ * @apiError (500) 500 Internal Server Error
+ */
 export const deleteUser = async (req, res) => {
 	const targetUserId = req.params.id;
 
@@ -115,6 +177,24 @@ export const deleteUser = async (req, res) => {
 };
 
 //! Following a User
+/**
+ * @api {put} /user/:id/follow Follow a user
+ * @apiName Follow User
+ * @apiGroup User
+ * @apiDescription This endpoint can be used to follow a user. This requires the target user's ID to be passed in the params and the current user's id in the request body. Returns a success message
+ *
+ *
+ * @apiParam {String} id User's ID to follow
+ *
+ * @apiSuccessExample {json} Success-Response:
+ * 200 OK
+ * {
+ * 	"message": "User followed!"
+ * }
+ *
+ * @apiError 403 User tried to follow his own account or User was already following the target user
+ * @apiError (500) 500 Internal Server Error
+ */
 export const followUser = async (req, res) => {
 	const targetUserId = req.params.id;
 
@@ -144,6 +224,24 @@ export const followUser = async (req, res) => {
 };
 
 //! Unfollow User
+/**
+ * @api {put} /user/:id/unfollow UnFollow a user
+ * @apiName UnFollow User
+ * @apiGroup User
+ * @apiDescription This endpoint can be used to unfollow a user. This requires the target user's ID to be passed in the params and the current user's id in the request body. Returns a success message
+ *
+ *
+ * @apiParam {String} id User's ID to unfollow
+ *
+ * @apiSuccessExample {json} Success-Response:
+ * 200 OK
+ * {
+ * 	"message": "User unfollowed!"
+ * }
+ *
+ * @apiError 403 User tried to unfollow his own account or User was not already following the target user
+ * @apiError (500) 500 Internal Server Error
+ */
 export const unfollowUser = async (req, res) => {
 	const targetUserId = req.params.id;
 
@@ -172,6 +270,25 @@ export const unfollowUser = async (req, res) => {
 };
 
 //! Get the followers of an user
+/**
+ * @api {get} /user/:id/followers Get Followers of a User
+ * @apiName Get User Followers
+ * @apiGroup User
+ * @apiDescription This endpoint can be used to get all the followers of a user. This requires the target user's ID to be passed in the params. Returns an array of user-details objects.
+ *
+ *
+ * @apiParam {String} id User's ID
+ *
+ * @apiSuccessExample {json} Success-Response:
+ * 200 OK
+ * [
+ * {<User 1 details>},
+ * {<User 2 details>},
+ * ...
+ * ]
+ *
+ * @apiError (500) 500 Internal Server Error
+ */
 export const getUserFollowers = async (req, res) => {
 	const currentUserId = req.params.id;
 
@@ -191,6 +308,25 @@ export const getUserFollowers = async (req, res) => {
 };
 
 //! Get the followings of a user
+/**
+ * @api {get} /user/:id/following Get Followings of User
+ * @apiName Get User Followings
+ * @apiGroup User
+ * @apiDescription This endpoint can be used to get all the users that the current user is following. This requires the target user's ID to be passed in the params. Returns an array of user-details objects.
+ *
+ *
+ * @apiParam {String} id User's ID
+ *
+ * @apiSuccessExample {json} Success-Response:
+ * 200 OK
+ * [
+ * {<User 1 details>},
+ * {<User 2 details>},
+ * ...
+ * ]
+ *
+ * @apiError (500) 500 Internal Server Error
+ */
 export const getUserFollowings = async (req, res) => {
 	const currentUserId = req.params.id;
 
