@@ -25,6 +25,7 @@ app.use(cookieParser());
 app.use("/auth", AuthRoute); //-> Authentication Routes
 app.use("/user", UserRoute); //-> User Action Routes
 app.use("/post", PostRoute); //-> Post Actions Routes
+app.use("/docs", express.static("./docs")); //--> API Documentation Routes
 
 // MongoDB Atlas Connection
 mongoose

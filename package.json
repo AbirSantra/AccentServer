@@ -8,6 +8,12 @@
     "start": "node index.js",
     "dev": "nodemon index.js"
   },
+  "apidoc": {
+    "name": "Accent API",
+    "version": "0.1.0",
+    "description": "Accent API documentation",
+    "url": "https://accentserver.cyclic.app"
+  },
   "author": "Abir Santra",
   "license": "ISC",
   "dependencies": {
@@ -17,8 +23,12 @@
     "cors": "^2.8.5",
     "dotenv": "^16.0.1",
     "express": "^4.18.1",
+    "grunt": "^1.5.3",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.5.1",
     "nodemon": "^2.0.19"
+  },
+  "devDependencies": {
+    "grunt-apidoc": "^0.11.0"
   }
 }
